@@ -42,10 +42,15 @@ nErosions = 3
 bAutoExposure = False
 exposure = 100
 
+# ======= Smoothing Parameters =======
+# How much smoothing (and latency) you want
+# 0 --> no smoothing, no latency
+# 0.9 --> lots of smoothing, lots of latency
+easingParam = 0.3
 
 # ======= OSC UDP Parameters =======
 ipAddress = '127.0.0.1'
-port = 8000
+port = 8888
 header = "/orbbec"
 
 
@@ -140,7 +145,10 @@ client = udp_client.SimpleUDPClient(ipAddress, port)
 
 # Main loop
 lastUpdateTime = time.time()
-count = 0
+bPrevData = False
+px = 0
+py = 0
+pz = 0
 while True:
 
 	# Get the depth pixels
@@ -204,6 +212,10 @@ while True:
 	cv2.drawContours(img2, contours, -1, (0,255,0), -1)
 
 	# Get the screen coordinates
+	x = px
+	y = py
+	z = pz
+	bNewData = False
 	if (avgDist > 0):
 		M = cv2.moments(contours[0])
 		cx = int(M['m10']/M['m00'])
@@ -214,16 +226,32 @@ while True:
 		# Convert screen to world coordinates
 		x,y,z = openni2.convert_depth_to_world(depth_stream, cx, cy, avgDist)
 		z /= 10.0
-		# now, x,y,z are all in mm
-		# Send this over osc
-		builder = osc_message_builder.OscMessageBuilder(address=header)
-		builder.add_arg(x)
-		builder.add_arg(y)
-		builder.add_arg(z)
-		msg = builder.build()
-		client.send(msg)
 
-		# print(x,y,z)
+		# Smooth the data 
+		if not bPrevData:
+			bPrevData = True
+			px = x
+			py = y
+			pz = z
+		x = x*(1.0-easingParam) + px*easingParam
+		y = y*(1.0-easingParam) + py*easingParam
+		z = z*(1.0-easingParam) + pz*easingParam
+		bNewData = True
+
+	# now, x,y,z are all in mm
+	# Send this over osc
+	builder = osc_message_builder.OscMessageBuilder(address=header)
+	builder.add_arg(int(bNewData))
+	builder.add_arg(x)
+	builder.add_arg(y)
+	builder.add_arg(z)
+	msg = builder.build()
+	client.send(msg)
+
+	# Save these values
+	px = x
+	py = y
+	pz = z
 	
 	# Debug the image
 	if (bViewFeed):
