@@ -31,7 +31,7 @@ This script only supports Windows 64 bit architectures.
   pip install imutils
   ```
 
-- The scripts require that the correct path to the "Redist" folder be passed. The "Redist" folder is located at ` OpenNI_2.3.0.55 > Windows > Astra OpenNI2 Development Instruction(x64)_V1.3 > OpenNI2 > OpenNI-Windows-x64-2.3.0.55 > Redist`. The path to this folder can be specified in the "User Parameters" section of the script. However, it has been included within this repo for convenience. For reference, the "Redist" folder should contain these files:
+- The scripts require that the correct path to the "Redist" folder be passed. The "Redist" folder is located at ` OpenNI_2.3.0.55 > Windows > Astra OpenNI2 Development Instruction(x64)_V1.3 > OpenNI2 > OpenNI-Windows-x64-2.3.0.55 > Redist`, or for x86 archiectures, ` OpenNI_2.3.0.55 > Windows > Astra OpenNI2 Development Instruction(x86)_V1.3 > OpenNI2 > OpenNI-Windows-x86-2.3.0.55 > Redist`. The path to this folder can be specified in the "User Parameters" section of the script. However, it has been included within this repo for convenience. For reference, the "Redist" folder should contain these files:
   - Redist
     - OpenNI2
       - Drivers
@@ -43,6 +43,7 @@ This script only supports Windows 64 bit architectures.
     - OpenNI2.dll
     - OpenNI2.jni.dll
     - org.openni.jar
+If you get a Win 193 error upon trying to run the python script, try using the Redist folder for the other architecture.
 
 ### Running This Script
 
