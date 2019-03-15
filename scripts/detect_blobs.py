@@ -208,8 +208,10 @@ while True:
 	avgDistMM = avgDist / 10.0;
 
 	# Create a debug image
-	img2 = cv2.cvtColor(grayPix, cv2.COLOR_GRAY2RGB)
-	cv2.drawContours(img2, contours, -1, (0,255,0), -1)
+	img2 = None
+	if bViewFeed:
+		img2 = cv2.cvtColor(grayPix, cv2.COLOR_GRAY2RGB)
+		cv2.drawContours(img2, contours, -1, (0,255,0), -1)
 
 	# Get the screen coordinates
 	x = px
@@ -221,7 +223,8 @@ while True:
 		cx = int(M['m10']/M['m00'])
 		cy = int(M['m01']/M['m00'])
 
-		cv2.drawMarker(img2, tuple([int(cx),int(cy)]), color=(0, 0, 255), thickness=5)
+		if bViewFeed:
+			cv2.drawMarker(img2, tuple([int(cx),int(cy)]), color=(0, 0, 255), thickness=5)
 
 		# Convert screen to world coordinates
 		x,y,z = openni2.convert_depth_to_world(depth_stream, cx, cy, avgDist)
