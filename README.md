@@ -69,6 +69,10 @@ To easily visualize these messages, use [this 3rd party app](https://www.kasperk
 
 Successful blob detection requires tuning a few parameters of the script. These parameters are listed within the script under the section "User Parameters". To change a parameter, stop running the script, then change the script, save it, and re-run it.
 
+### TODO
+
+The coordinates are sometimes noisy, especially the z. This is likely because small changes in the blob outline contribute to significant changes in the z, but only marginal changes in the x and y. To attenuate this noise, use [filterpy](https://github.com/rlabbe/filterpy) module to implement either realtime Kalman or G-H filters.
+
 ### References
 
 Blob Tracking:
